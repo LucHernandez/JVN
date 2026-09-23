@@ -9,6 +9,7 @@ package jvn;
 
 import java.rmi.*;
 import java.io.*;
+import java.util.UUID;
 
 
 /**
@@ -22,7 +23,7 @@ public interface JvnRemoteServer extends Remote {
 	* @param joi : the JVN object id
 	* @throws java.rmi.RemoteException,JvnException
 	**/
-  public void jvnInvalidateReader(int joi)
+  public void jvnInvalidateReader(UUID joi)
 	throws java.rmi.RemoteException,jvn.JvnException;
 	    
 	/**
@@ -31,7 +32,7 @@ public interface JvnRemoteServer extends Remote {
 	* @return the current JVN object state 
 	* @throws java.rmi.RemoteException,JvnException
 	**/
-        public Serializable jvnInvalidateWriter(int joi)
+        public Serializable jvnInvalidateWriter(UUID joi)
 	throws java.rmi.RemoteException,jvn.JvnException;
 	
 	/**
@@ -40,7 +41,7 @@ public interface JvnRemoteServer extends Remote {
 	* @return the current JVN object state
 	* @throws java.rmi.RemoteException,JvnException
 	**/
-   public Serializable jvnInvalidateWriterForReader(int joi)
+   public Serializable jvnInvalidateWriterForReader(UUID joi)
 	 throws java.rmi.RemoteException,jvn.JvnException;
 
 }

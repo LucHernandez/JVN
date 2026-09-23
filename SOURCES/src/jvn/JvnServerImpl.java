@@ -10,10 +10,10 @@ package jvn;
 
 import java.rmi.server.UnicastRemoteObject;
 import java.io.*;
+import java.util.UUID;
 
 
-
-public class JvnServerImpl 	
+public class JvnServerImpl
               extends UnicastRemoteObject 
 							implements JvnLocalServer, JvnRemoteServer{ 
 	
@@ -99,7 +99,7 @@ public class JvnServerImpl
 	* @return the current JVN object state
 	* @throws  JvnException
 	**/
-   public Serializable jvnLockRead(int joi)
+   public Serializable jvnLockRead(UUID joi)
 	 throws JvnException {
 		// to be completed 
 		return null;
@@ -111,7 +111,7 @@ public class JvnServerImpl
 	* @return the current JVN object state
 	* @throws  JvnException
 	**/
-   public Serializable jvnLockWrite(int joi)
+   public Serializable jvnLockWrite(UUID joi)
 	 throws JvnException {
 		// to be completed 
 		return null;
@@ -125,7 +125,7 @@ public class JvnServerImpl
 	* @return void
 	* @throws java.rmi.RemoteException,JvnException
 	**/
-  public void jvnInvalidateReader(int joi)
+  public void jvnInvalidateReader(UUID joi)
 	throws java.rmi.RemoteException,jvn.JvnException {
 		// to be completed 
 	};
@@ -136,7 +136,7 @@ public class JvnServerImpl
 	* @return the current JVN object state
 	* @throws java.rmi.RemoteException,JvnException
 	**/
-  public Serializable jvnInvalidateWriter(int joi)
+  public Serializable jvnInvalidateWriter(UUID joi)
 	throws java.rmi.RemoteException,jvn.JvnException { 
 		// to be completed 
 		return null;
@@ -148,7 +148,7 @@ public class JvnServerImpl
 	* @return the current JVN object state
 	* @throws java.rmi.RemoteException,JvnException
 	**/
-   public Serializable jvnInvalidateWriterForReader(int joi)
+   public Serializable jvnInvalidateWriterForReader(UUID joi)
 	 throws java.rmi.RemoteException,jvn.JvnException { 
 		// to be completed 
 		return null;

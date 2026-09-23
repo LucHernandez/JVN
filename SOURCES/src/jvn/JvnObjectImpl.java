@@ -2,6 +2,7 @@ package jvn;
 
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.concurrent.locks.Lock;
 
 public class JvnObjectImpl implements JvnObject{
@@ -11,11 +12,13 @@ public class JvnObjectImpl implements JvnObject{
     Lock readLock;
     JvnServerImpl localServer;
     Serializable cachedObject;
+    UUID uuid;
 
     public JvnObjectImpl(JvnServerImpl localServer, Serializable cachedObject) {
         lockStatus = LockStatus.NL;
         this.localServer = localServer;
         this.cachedObject = cachedObject;
+        uuid = UUID.randomUUID();
     }
 
     @Override
@@ -59,8 +62,8 @@ public class JvnObjectImpl implements JvnObject{
     }
 
     @Override
-    public int jvnGetObjectId() throws JvnException {
-        return 0;
+    public UUID jvnGetObjectId() throws JvnException {
+        return uuid;
     }
 
     @Override
