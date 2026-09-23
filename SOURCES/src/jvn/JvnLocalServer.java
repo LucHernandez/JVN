@@ -7,6 +7,7 @@
 
 package jvn; 
 import java.io.Serializable;
+import java.util.UUID;
 
 /**
  * Local interface of a JVN server  (used by the applications).
@@ -50,7 +51,7 @@ public interface JvnLocalServer {
 	* @return the current JVN object state
 	* @throws  JvnException
 	**/
-   public Serializable jvnLockRead(int joi)
+   public Serializable jvnLockRead(UUID joi)
 	 throws JvnException;
 
 	/**
@@ -59,7 +60,7 @@ public interface JvnLocalServer {
 	* @return the current JVN object state
 	* @throws  JvnException
 	**/
-   public Serializable jvnLockWrite(int joi)
+   public Serializable jvnLockWrite(UUID joi)
 	 throws JvnException;
 
          

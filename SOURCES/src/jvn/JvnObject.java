@@ -8,6 +8,7 @@
 package jvn;
 
 import java.io.*;
+import java.util.UUID;
 
 /**
  * Interface of a JVN object. 
@@ -43,7 +44,7 @@ public interface JvnObject extends Serializable {
 	* Get the object identification
 	* @throws JvnException
 	**/
-	public int jvnGetObjectId()
+	public UUID jvnGetObjectId()
 	throws jvn.JvnException; 
 	
 	/**

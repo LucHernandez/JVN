@@ -10,10 +10,10 @@ package jvn;
 
 import java.rmi.server.UnicastRemoteObject;
 import java.io.*;
+import java.util.UUID;
 
 
-
-public class JvnServerImpl 	
+public class JvnServerImpl
               extends UnicastRemoteObject 
 							implements JvnLocalServer, JvnRemoteServer{ 
 	
@@ -99,7 +99,7 @@ public class JvnServerImpl
 	* @return the current JVN object state
 	* @throws  JvnException
 	**/
-   public Serializable jvnLockRead(int joi)
+   public Serializable jvnLockRead(UUID joi)
 	 throws JvnException {
 		// to be completed 
 		return null;
