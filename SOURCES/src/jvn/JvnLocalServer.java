@@ -7,6 +7,8 @@
 
 package jvn; 
 import java.io.Serializable;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 import java.util.UUID;
 
 /**
@@ -42,7 +44,7 @@ public interface JvnLocalServer {
 	* @throws JvnException
 	**/
 	public  JvnObject jvnLookupObject(String jon)
-	throws jvn.JvnException ; 
+	throws jvn.JvnException, NotBoundException, RemoteException;
 	
 	
 	/**

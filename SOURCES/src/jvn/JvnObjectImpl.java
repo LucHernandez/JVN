@@ -12,13 +12,13 @@ public class JvnObjectImpl implements JvnObject{
     Lock readLock;
     JvnServerImpl localServer;
     Serializable cachedObject;
-    UUID uuid;
+    public final UUID uuid;
 
-    public JvnObjectImpl(JvnServerImpl localServer, Serializable cachedObject) {
+    public JvnObjectImpl(JvnServerImpl localServer, Serializable cachedObject, UUID id) {
         lockStatus = LockStatus.NL;
         this.localServer = localServer;
         this.cachedObject = cachedObject;
-        uuid = UUID.randomUUID();
+        uuid = id;
     }
 
     @Override
