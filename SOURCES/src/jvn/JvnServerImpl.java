@@ -215,8 +215,10 @@ public class JvnServerImpl
         }
 	}
 
+
+	@Override
 	public boolean equals(Object server){
-        return ((JvnServerImpl) server).id == this.id;
+		return ((JvnServerImpl) server).id == this.id;
 	}
 }
 
