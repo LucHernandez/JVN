@@ -8,51 +8,68 @@
 
 package jvn;
 
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
 import java.io.Serializable;
-import java.util.UUID;
+import java.util.*;
 
 
-public class JvnCoordImpl 	
+public class JvnCoordImpl
               extends UnicastRemoteObject 
 							implements JvnRemoteCoord{
-	
 
-  /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+    HashMap<UUID, List<JvnRemoteServer>> readList;
+    HashMap<UUID, JvnRemoteServer> writeList;
+    HashMap<String, JvnObject> objects;
+
+    public static void main() {
+        try {
+            JvnCoordImpl jvnServer = new JvnCoordImpl();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
 
 /**
   * Default constructor
   * @throws JvnException
   **/
-	private JvnCoordImpl() throws Exception {
+	private JvnCoordImpl() throws RemoteException {
 		// to be completed
+        LocateRegistry.createRegistry(1099);
+        readList = new HashMap<UUID, List<JvnRemoteServer>>();
+        writeList = new HashMap<UUID, JvnRemoteServer>();
+        objects = new HashMap<String, JvnObject>();
 	}
 
   /**
-  *  Allocate a NEW JVN object id (usually allocated to a 
-  *  newly created JVN object)
-  * @throws java.rmi.RemoteException,JvnException
-  **/
-  public int jvnGetObjectId()
+   * Allocate a NEW JVN object id (usually allocated to a
+   * newly created JVN object)
+   *
+   * @throws java.rmi.RemoteException,JvnException
+   **/
+  public UUID jvnGetObjectId()
   throws java.rmi.RemoteException,jvn.JvnException {
-    // to be completed 
-    return 0;
+    return UUID.randomUUID();
   }
   
   /**
   * Associate a symbolic name with a JVN object
   * @param jon : the JVN object name
   * @param jo  : the JVN object 
-  * @param joi : the JVN object identification
+  /* @param joi : the JVN object identification
   * @param js  : the remote reference of the JVNServer
   * @throws java.rmi.RemoteException,JvnException
   **/
   public void jvnRegisterObject(String jon, JvnObject jo, JvnRemoteServer js)
   throws java.rmi.RemoteException,jvn.JvnException{
-    // to be completed 
+    // to be completed
+      if (objects.containsKey(jo.toString())) {
+          throw new JvnException("Object already exists in coordinator !");
+      }
+      objects.put(jo.toString(), jo);
+      readList.put(jo.jvnGetObjectId(), new ArrayList<JvnRemoteServer>());
   }
   
   /**
@@ -63,8 +80,9 @@ public class JvnCoordImpl
   **/
   public JvnObject jvnLookupObject(String jon, JvnRemoteServer js)
   throws java.rmi.RemoteException,jvn.JvnException{
-    // to be completed 
-    return null;
+      JvnObject objet = objects.get(jon);
+      objet.jvnUnLock();
+      return objet;
   }
   
   /**
@@ -74,10 +92,15 @@ public class JvnCoordImpl
   * @return the current JVN object state
   * @throws java.rmi.RemoteException, JvnException
   **/
-   public Serializable jvnLockRead(int joi, JvnRemoteServer js)
+   public Serializable jvnLockRead(UUID joi, JvnRemoteServer js)
    throws java.rmi.RemoteException, JvnException{
     // to be completed
-    return null;
+       JvnRemoteServer writer = writeList.get(joi);
+       if (writer != null) {
+           objects.put(joi.toString(), (JvnObject) writer.jvnInvalidateWriterForReader(joi));
+           writer = null;
+       }
+       return objects.get(joi.toString());
    }
 
   /**
@@ -87,10 +110,22 @@ public class JvnCoordImpl
   * @return the current JVN object state
   * @throws java.rmi.RemoteException, JvnException
   **/
-   public Serializable jvnLockWrite(int joi, JvnRemoteServer js)
+   public Serializable jvnLockWrite(UUID joi, JvnRemoteServer js)
    throws java.rmi.RemoteException, JvnException{
     // to be completed
-    return null;
+       JvnRemoteServer writer = writeList.get(joi);
+       if (writer != null) {
+           objects.put(joi.toString(), (JvnObject) writer.jvnInvalidateWriterForReader(joi));
+           writer = null;
+       }
+       readList.get(joi).forEach(reader -> {
+           try {
+               reader.jvnInvalidateReader(joi);
+           } catch (Exception e) {
+
+           }
+       });
+    return objects.get(joi.toString());
    }
 
 	/**
@@ -100,7 +135,30 @@ public class JvnCoordImpl
 	**/
     public void jvnTerminate(JvnRemoteServer js)
 	 throws java.rmi.RemoteException, JvnException {
-	 // to be completed
+	 writeList.forEach((key, value) -> {
+         try {
+             if (value.equals(js)) {
+                 writeList.remove(key);
+             }
+         } catch (Exception e) {
+             throw new RuntimeException(e);
+         }
+     });
+     readList.forEach((key, list) -> {
+         list.forEach(reader -> {
+             try {
+                 if (reader.equals(js)) {
+                     readList.get(key).remove(reader);
+                     return;
+                 }
+             } catch (Exception e) {
+                 throw new RuntimeException(e);
+             }
+         });
+         if  (readList.get(key).isEmpty()) {
+             readList.remove(key);
+         }
+     });
     }
 }
 

@@ -49,10 +49,10 @@ public class JvnServerImpl
 	 *
 	 * @throws JvnException
 	 **/
-	public static JvnServerImpl jvnGetServer(String port) throws JvnException{
+	public static JvnServerImpl jvnGetServer() throws JvnException{
 		if (js == null) {
 			try {
-				js = new JvnServerImpl(port);
+				js = new JvnServerImpl("1099");
 			} catch (Exception e) {
 				throw new JvnException("No rmi server or port available" + e.getMessage());
 			}
