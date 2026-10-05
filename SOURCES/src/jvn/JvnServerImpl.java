@@ -28,6 +28,7 @@ public class JvnServerImpl
 	// A JVN server is managed as a singleton
 	private static JvnServerImpl js = null;
     private final JvnRemoteCoord coordinator;
+	public UUID id;
 	private JvnObject jo;
 
 	/**
@@ -39,6 +40,7 @@ public class JvnServerImpl
 		super();
         Registry registry = LocateRegistry.getRegistry(port);
 		this.coordinator = (JvnRemoteCoord) registry.lookup("coordinateur");
+		id = this.coordinator.jvnGetObjectId();
 	}
 
 	/**
@@ -211,6 +213,10 @@ public class JvnServerImpl
 		} catch (JvnException e) {
             throw new RemoteException("Remote Exception W -> R");
         }
+	}
+
+	public boolean equals(Object server){
+        return ((JvnServerImpl) server).id == this.id;
 	}
 }
 
