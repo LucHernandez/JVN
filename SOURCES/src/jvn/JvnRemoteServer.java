@@ -44,11 +44,6 @@ public interface JvnRemoteServer extends Remote {
    public Serializable jvnInvalidateWriterForReader(UUID joi)
 	 throws java.rmi.RemoteException,jvn.JvnException;
 
-
-   @Override
-   /*True if server id = this.id*/
-   public boolean equals(Object server) throws java.rmi.RemoteException;
-
 }
 
  

@@ -214,12 +214,6 @@ public class JvnServerImpl
             throw new RemoteException("Remote Exception W -> R");
         }
 	}
-
-
-	@Override
-	public boolean equals(Object server){
-		return ((JvnServerImpl) server).id == this.id;
-	}
 }
 
 
