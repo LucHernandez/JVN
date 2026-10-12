@@ -193,7 +193,6 @@ public class JvnServerImpl
 	 **/
 	public void jvnInvalidateReader(UUID joi)
 			throws java.rmi.RemoteException, jvn.JvnException {
-		while
 		try{
 			jo.jvnInvalidateReader();
 		} catch (JvnException e) {

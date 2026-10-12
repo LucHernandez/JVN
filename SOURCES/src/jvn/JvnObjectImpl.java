@@ -38,6 +38,7 @@ public class JvnObjectImpl implements JvnObject{
             case W -> throw new RuntimeException("Higher priority lock already acquired");
             case null, default ->  throw new JvnException("Invalid Lock Status");
         }
+        readLock.lock();
     }
 
     @Override
@@ -51,16 +52,22 @@ public class JvnObjectImpl implements JvnObject{
             case W -> throw new RuntimeException("Write Lock already acquired");
             case null, default ->  throw new JvnException("Invalid Lock Status");
         }
+        writeLock.lock();
     }
 
     @Override
     public void jvnUnLock() throws JvnException {
-        switch (lockStatus) {
-            case W -> lockStatus = LockStatus.WC;
-            case R -> lockStatus = LockStatus.RC;
+        if (lockStatus == LockStatus.W) {
+            lockStatus = LockStatus.WC;
+            writeLock.unlock();
+        } else if (lockStatus == LockStatus.R || lockStatus == LockStatus.RWC) {
+            if (lockStatus == LockStatus.R) {
+                lockStatus = LockStatus.RC;
+            } else {
+                lockStatus = LockStatus.WC;
+            }
+            readLock.unlock();
         }
-        readLock.unlock();
-        writeLock.unlock();
     }
 
     @Override
