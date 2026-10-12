@@ -1,29 +1,13 @@
-/***
- * Sentence class : used for representing the text exchanged between users 
- * during a chat application
- * Contact: 
- *
- * Authors: 
- */
-
 package irc;
 
-public class Sentence implements java.io.Serializable {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	String 	data;
-  
-	public Sentence() {
-		data = new String("");
-	}
-	
-	public void write(String text) {
-		data = text;
-	}
+public class Sentence implements ISentence {
+	private String data = "";
+
 	public String read() {
-		return data;	
+		return data;
 	}
-	
+
+	public void write(String s) {
+		this.data = s;
+	}
 }

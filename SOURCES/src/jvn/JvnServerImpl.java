@@ -231,6 +231,19 @@ public class JvnServerImpl
             throw new RemoteException("Remote Exception W -> R");
         }
 	}
+
+	// Dans JvnServerImpl.java
+	public Object jvnCreateObject(Serializable o, String jon) throws JvnException {
+		JvnObject jvnObj = jvnCreateObject(o);
+		jvnRegisterObject(jon, jvnObj);
+		return JvnProxy.newInstance(o, jvnObj);
+	}
+
+	public Object jvnLookupObject(String jon, Class<?> intf) throws JvnException, NotBoundException, RemoteException {
+		JvnObject jvnObj = jvnLookupObject(jon);
+		if (jvnObj == null) return null;
+		return JvnProxy.newInstance(jvnObj.jvnGetObjectState(), jvnObj);
+	}
 }
 
 

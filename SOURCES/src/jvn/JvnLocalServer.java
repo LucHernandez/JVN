@@ -71,7 +71,10 @@ public interface JvnLocalServer {
     * @throws JvnException
     **/
    public  void jvnTerminate()
-   throws jvn.JvnException; 
+   throws jvn.JvnException;
+
+	public Object jvnCreateObject(Serializable o, String jon) throws JvnException;
+	public Object jvnLookupObject(String jon, Class<?> intf) throws JvnException, NotBoundException, RemoteException;
 }
 
  
