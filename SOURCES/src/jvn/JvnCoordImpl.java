@@ -10,6 +10,7 @@ package jvn;
 
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.io.Serializable;
 import java.util.*;
@@ -37,10 +38,20 @@ public class JvnCoordImpl
   **/
 	private JvnCoordImpl() throws RemoteException {
 		// to be completed
-        LocateRegistry.createRegistry(1099);
+        super();
+        Registry registry = null;
         readList = new HashMap<UUID, List<JvnRemoteServer>>();
         writeList = new HashMap<UUID, JvnRemoteServer>();
         objects = new HashMap<String, JvnObject>();
+        registry = LocateRegistry.createRegistry(1099);
+        System.out.println("COORDINATEUR UP !");
+
+        try {
+            registry.rebind("rmi://localhost/coordinateur", this);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        System.out.println("COORDINATEUR UP !");
 	}
 
   /**
@@ -64,6 +75,7 @@ public class JvnCoordImpl
   **/
   public void jvnRegisterObject(String jon, JvnObject jo, JvnRemoteServer js)
   throws java.rmi.RemoteException,jvn.JvnException{
+      System.out.println("registering object");
     // to be completed
       if (objects.containsKey(jo.toString())) {
           throw new JvnException("Object already exists in coordinator !");

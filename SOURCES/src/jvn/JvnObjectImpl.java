@@ -4,13 +4,14 @@ import java.io.Serializable;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class JvnObjectImpl implements JvnObject{
 
     LockStatus lockStatus;
     Lock writeLock;
     Lock readLock;
-    JvnServerImpl localServer;
+    transient JvnLocalServer localServer;
     Serializable cachedObject;
     public final UUID uuid;
 
@@ -18,6 +19,9 @@ public class JvnObjectImpl implements JvnObject{
         lockStatus = LockStatus.NL;
         this.localServer = localServer;
         this.cachedObject = cachedObject;
+        this.writeLock = new ReentrantLock();
+        this.readLock = new ReentrantLock();
+        System.out.println("LOCKS" + writeLock + readLock);
         uuid = id;
     }
 
@@ -34,7 +38,6 @@ public class JvnObjectImpl implements JvnObject{
             case W -> throw new RuntimeException("Higher priority lock already acquired");
             case null, default ->  throw new JvnException("Invalid Lock Status");
         }
-        readLock.lock();
     }
 
     @Override
@@ -48,7 +51,6 @@ public class JvnObjectImpl implements JvnObject{
             case W -> throw new RuntimeException("Write Lock already acquired");
             case null, default ->  throw new JvnException("Invalid Lock Status");
         }
-        writeLock.lock();
     }
 
     @Override

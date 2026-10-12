@@ -14,6 +14,8 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.io.*;
+import java.util.HashMap;
+import java.util.Random;
 import java.util.UUID;
 
 
@@ -24,12 +26,13 @@ public class JvnServerImpl
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = new Random().nextLong();;;
 	// A JVN server is managed as a singleton
 	private static JvnServerImpl js = null;
     private final JvnRemoteCoord coordinator;
 	public UUID id;
 	private JvnObject jo;
+	private HashMap<UUID, JvnObject> objs;
 
 	/**
 	 * Default constructor
@@ -38,8 +41,16 @@ public class JvnServerImpl
 	 **/
 	private JvnServerImpl(String port) throws Exception {
 		super();
-        Registry registry = LocateRegistry.getRegistry(port);
-		this.coordinator = (JvnRemoteCoord) registry.lookup("coordinateur");
+        Registry registry = LocateRegistry.getRegistry();
+		System.out.println("FOUND REGISTRY");
+		registry.rebind("server"+serialVersionUID, this);
+		this.coordinator = (JvnRemoteCoord) registry.lookup("rmi://localhost/coordinateur");
+		this.objs = new HashMap<UUID, JvnObject>();
+		if (this.coordinator == null) {
+			System.out.println("DID NOT FIND COORDINATOR");
+		} else {
+			System.out.println("FOUND COORDINATOR");
+		}
 		id = this.coordinator.jvnGetObjectId();
 	}
 
@@ -84,14 +95,20 @@ public class JvnServerImpl
 	 **/
 	public JvnObject jvnCreateObject(Serializable o)
 			throws jvn.JvnException {
+		System.out.println("JvnServerImpl.jvnCreateObject");
 		//	Créer l'objet
 		// Register l'objet vers le coordinateur
 		try  {
-			JvnObject objet = new JvnObjectImpl(this,o, coordinator.jvnGetObjectId());
+			JvnObject objet = new JvnObjectImpl(this, o, coordinator.jvnGetObjectId());
+			System.out.println("Object created" + objet);
 			coordinator.jvnRegisterObject(objet.jvnGetObjectId().toString(), objet, this);
+			System.out.println("Object registered");
+			this.objs.put(this.coordinator.jvnGetObjectId(), objet);
+			this.jvnLockWrite(objet.jvnGetObjectId());
 			return objet;
 		}
-		catch (Exception e){
+		catch (Exception e) {
+			e.printStackTrace();
 			throw new JvnException();
 		}
 	}
@@ -129,7 +146,7 @@ public class JvnServerImpl
             throw new RuntimeException(e);
         }
 		catch (Exception e){
-			throw new NotBoundException("Not Bound Exception" + e);
+			return null;
 		}
 	}
 
@@ -176,6 +193,7 @@ public class JvnServerImpl
 	 **/
 	public void jvnInvalidateReader(UUID joi)
 			throws java.rmi.RemoteException, jvn.JvnException {
+		while
 		try{
 			jo.jvnInvalidateReader();
 		} catch (JvnException e) {
